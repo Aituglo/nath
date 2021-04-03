@@ -48,6 +48,15 @@ class Travel:
                     return station
         return False
 
+    # On ajoute à notre trajet les stations entre 2 points
+    def add_travel_from_two_point(self, start, stop, line, all_stations, reverse):
+        if reverse:
+            for index in range(start, stop, -1):
+                self.travel.append(self.get_station_by_index(index, line, all_stations))
+        else:
+            for index in range(start, stop):
+                self.travel.append(self.get_station_by_index(index, line, all_stations))
+
     # On écrit le trajet
     def print_travel(self):
         for station in self.travel:
@@ -111,12 +120,9 @@ if same_line[0]:
     start_position = travel.get_line_position(travel.start_station, same_line[1])
     stop_position = travel.get_line_position(travel.stop_station, same_line[1])
     if start_position < stop_position:
-        for index in range(start_position, stop_position + 1):
-            travel.travel.append(travel.get_station_by_index(index, same_line[1], all_stations))
+        travel.add_travel_from_two_point(start_position, stop_position + 1, same_line[1], all_stations, False)
     else:
-        for index in range(start_position, stop_position - 1, -1):
-            
-            travel.travel.append(travel.get_station_by_index(index, same_line[1], all_stations))
+        travel.add_travel_from_two_point(start_position, stop_position - 1, same_line[1], all_stations, True)
 else:
     # On récupère l'intersection qu'on va utiliser
     good_intersection = travel.get_good_intersection(all_stations)
@@ -126,24 +132,18 @@ else:
     start_position = travel.get_line_position(travel.start_station, first_travel[1])
     inter_position = travel.get_line_position(good_intersection, first_travel[1])
     if start_position < inter_position:
-        for index in range(start_position, inter_position + 1):
-            travel.travel.append(travel.get_station_by_index(index, first_travel[1], all_stations))
+        travel.add_travel_from_two_point(start_position, inter_position + 1, first_travel[1], all_stations, False)
     else:
-        for index in range(start_position, inter_position - 1, -1):
-            
-            travel.travel.append(travel.get_station_by_index(index, first_travel[1], all_stations))
+        travel.add_travel_from_two_point(start_position, inter_position - 1, first_travel[1], all_stations, True)
 
     # On fait le reste du chemin
     second_travel = travel.is_same_line(good_intersection, travel.stop_station)
     stop_position = travel.get_line_position(travel.stop_station, second_travel[1])
     inter_position = travel.get_line_position(good_intersection, second_travel[1])
     if inter_position < stop_position:
-        for index in range(inter_position + 1, stop_position + 1):
-            travel.travel.append(travel.get_station_by_index(index, second_travel[1], all_stations))
+        travel.add_travel_from_two_point(inter_position + 1, stop_position + 1, second_travel[1], all_stations, False)
     else:
-        for index in range(inter_position - 1, stop_position - 1, -1):
-            
-            travel.travel.append(travel.get_station_by_index(index, second_travel[1], all_stations))
+        travel.add_travel_from_two_point(inter_position - 1, stop_position - 1, second_travel[1], all_stations, True)
 
 travel.print_travel()
 
